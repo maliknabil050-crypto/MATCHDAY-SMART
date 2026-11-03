@@ -3,19 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>المدرج الذكي • MATCHDAY SMART PASS</title>
+  <title>المدرج الذكي • MATCHDAY PASS</title>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
 
   <style>
-    /* متغيرات الثيم الديناميكية الافتراضية (الثيم الذهبي العام) */
     :root {
       --primary-accent: #E5A93C;
       --secondary-accent: #FFFFFF;
       --bg-dark: #0D0E12;
-      --card-bg: rgba(22, 24, 30, 0.85);
+      --card-bg: rgba(22, 24, 30, 0.9);
       --border-accent: rgba(229, 169, 60, 0.35);
       --danger-red: #E63946;
       --text-muted: #8E929C;
@@ -23,11 +22,17 @@
       --club-badge-text: #000;
     }
 
-    /* فئات الثيمات المخصصة للأندية والمنتخب */
+    /* ألوان الأندية الديناميكية */
     body.theme-default {
       --primary-accent: #E5A93C;
       --border-accent: rgba(229, 169, 60, 0.35);
       --club-badge-bg: linear-gradient(135deg, #E5A93C, #B37D22);
+      --club-badge-text: #000;
+    }
+    body.theme-itti {
+      --primary-accent: #FEDB00;
+      --border-accent: rgba(254, 219, 0, 0.4);
+      --club-badge-bg: linear-gradient(135deg, #FEDB00, #C59B27);
       --club-badge-text: #000;
     }
     body.theme-hilal {
@@ -40,12 +45,6 @@
       --primary-accent: #FEDB00;
       --border-accent: rgba(254, 219, 0, 0.4);
       --club-badge-bg: linear-gradient(135deg, #FEDB00, #0045A0);
-      --club-badge-text: #000;
-    }
-    body.theme-itti {
-      --primary-accent: #FEDB00;
-      --border-accent: rgba(254, 219, 0, 0.4);
-      --club-badge-bg: linear-gradient(135deg, #FEDB00, #C59B27);
       --club-badge-text: #000;
     }
     body.theme-ahli {
@@ -80,7 +79,7 @@
       background: radial-gradient(circle at top, #1A1D24, var(--bg-dark));
       color: #FFF;
       min-height: 100vh;
-      padding-bottom: 60px;
+      padding-bottom: 70px;
     }
 
     .container {
@@ -92,7 +91,6 @@
       gap: 16px;
     }
 
-    /* قائمة اختيار الثيم والفريق */
     .theme-selector-box {
       background: rgba(255, 255, 255, 0.04);
       border: 1px solid rgba(255, 255, 255, 0.1);
@@ -100,7 +98,6 @@
       padding: 8px 12px;
       display: flex;
       align-items: center;
-      justify-content: space-between;
       gap: 10px;
     }
     .theme-label {
@@ -122,7 +119,6 @@
       cursor: pointer;
     }
 
-    /* رأس المنصة */
     .header {
       display: flex;
       justify-content: space-between;
@@ -137,7 +133,6 @@
       font-size: 1.05rem;
       font-weight: 900;
       color: var(--primary-accent);
-      letter-spacing: 0.5px;
     }
     .brand-sub {
       font-size: 0.72rem;
@@ -150,12 +145,9 @@
       border-radius: 20px;
       font-size: 0.72rem;
       font-weight: 800;
-      display: flex;
-      align-items: center;
-      gap: 4px;
     }
 
-    /* بطاقة المشجع الرقمية */
+    /* بطاقة الهوية الرقمية */
     .smart-card {
       background: linear-gradient(145deg, #161820, #0B0C0E);
       border: 1px solid var(--border-accent);
@@ -200,7 +192,7 @@
       border: 1px solid rgba(255,255,255,0.05);
     }
     .stat-val {
-      font-size: 1.3rem;
+      font-size: 1.25rem;
       font-weight: 900;
       color: var(--primary-accent);
     }
@@ -209,7 +201,61 @@
       color: var(--text-muted);
     }
 
-    /* أزرار الإجراءات */
+    /* بطاقة التذكرة والمقعد (المرحلة 1) */
+    .seat-pass-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-accent);
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .section-title {
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: var(--primary-accent);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .seat-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      text-align: center;
+    }
+    .seat-item {
+      background: rgba(0,0,0,0.3);
+      padding: 8px 4px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+    .seat-val {
+      font-size: 0.95rem;
+      font-weight: 900;
+      color: #FFF;
+    }
+    .seat-lbl {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+    }
+    .seat-inputs {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+    }
+    .seat-input {
+      background: #111317;
+      border: 1px solid rgba(255,255,255,0.15);
+      color: #FFF;
+      padding: 6px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      text-align: center;
+    }
+
+    /* أزرار الإجراءات السريعة في الملعب */
     .action-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -219,16 +265,15 @@
       background: var(--card-bg);
       border: 1px solid var(--border-accent);
       border-radius: 14px;
-      padding: 14px 6px;
+      padding: 12px 6px;
       color: #FFF;
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 6px;
       cursor: pointer;
-      font-size: 0.78rem;
+      font-size: 0.75rem;
       font-weight: 700;
-      transition: all 0.2s ease;
       text-align: center;
     }
     .action-btn:active {
@@ -243,7 +288,37 @@
       font-size: 1.35rem;
     }
 
-    /* مساحة المعاينة */
+    /* أدوات الخروج ومواقف السيارات (المرحلة 2 و 5) */
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+    .tool-box {
+      background: var(--card-bg);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 14px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .tool-btn {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border-accent);
+      color: #FFF;
+      padding: 8px;
+      border-radius: 8px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    /* شاشة المعاينة الحية */
     .preview-box {
       background: #111317;
       border: 1px solid rgba(255,255,255,0.08);
@@ -253,8 +328,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      min-height: 220px;
-      position: relative;
+      min-height: 200px;
     }
     .preview-box img, .preview-box video {
       width: 100%;
@@ -263,30 +337,39 @@
     }
     .empty-msg {
       color: var(--text-muted);
-      font-size: 0.82rem;
+      font-size: 0.8rem;
       text-align: center;
       padding: 24px;
-      line-height: 1.6;
+      line-height: 1.5;
     }
 
-    /* بطاقة الموقع */
-    .location-card {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px dashed var(--primary-accent);
-      border-radius: 12px;
-      padding: 14px;
+    /* شاشة المنارة الضوئية لإيجاد الأصدقاء */
+    .beacon-overlay {
+      position: fixed;
+      inset: 0;
+      background: #000;
+      z-index: 10000;
       display: none;
       flex-direction: column;
-      gap: 8px;
-      font-size: 0.8rem;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      cursor: pointer;
     }
-    .location-card a {
-      color: var(--primary-accent);
-      text-decoration: underline;
-      font-weight: 700;
+    .beacon-strobe {
+      animation: beaconFlash 0.35s infinite alternate;
+    }
+    @keyframes beaconFlash {
+      from { background-color: var(--primary-accent); color: #000; }
+      to { background-color: #000; color: #FFF; }
+    }
+    .beacon-text {
+      font-size: 3rem;
+      font-weight: 900;
+      padding: 20px;
     }
 
-    /* نافذة الطوارئ (SOS Modal) */
+    /* نافذة الطوارئ (أسعفني) */
     .sos-modal {
       position: fixed;
       inset: 0;
@@ -299,13 +382,6 @@
       padding: 20px;
       text-align: center;
     }
-    .sos-strobe {
-      animation: strobe 0.5s infinite alternate;
-    }
-    @keyframes strobe {
-      from { background-color: rgba(230, 57, 70, 0.2); }
-      to { background-color: rgba(0, 0, 0, 0.96); }
-    }
     .sos-content {
       background: #18090B;
       border: 2px solid var(--danger-red);
@@ -315,13 +391,13 @@
       max-width: 360px;
       display: flex;
       flex-direction: column;
-      gap: 14px;
+      gap: 12px;
     }
     .sos-btn {
-      padding: 14px;
+      padding: 12px;
       border-radius: 12px;
       font-weight: 800;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       border: none;
       cursor: pointer;
       display: flex;
@@ -330,29 +406,15 @@
       gap: 8px;
       text-decoration: none;
     }
-    .sos-call {
-      background: var(--danger-red);
-      color: #FFF;
-    }
-    .sos-share {
-      background: #25D366;
-      color: #FFF;
-    }
-    .sos-close {
-      background: #2A2D35;
-      color: #FFF;
-      font-size: 0.85rem;
-    }
+    .sos-call { background: var(--danger-red); color: #FFF; }
+    .sos-share { background: #25D366; color: #FFF; }
+    .sos-close { background: #2A2D35; color: #FFF; }
 
     footer {
       text-align: center;
       font-size: 0.72rem;
       color: var(--text-muted);
-      margin-top: 12px;
-      line-height: 1.6;
-    }
-    footer strong {
-      color: #CCC;
+      margin-top: 10px;
     }
   </style>
 </head>
@@ -360,9 +422,9 @@
 
 <div class="container">
 
-  <!-- قائمة المعاينة والتبديل السريع بين ألوان الأندية -->
+  <!-- قائمة المعاينة والتبديل السريع -->
   <div class="theme-selector-box">
-    <span class="theme-label">🎨 تخصيص هوية الفريق:</span>
+    <span class="theme-label">🎨 هوية الفريق:</span>
     <select class="theme-select" id="clubSelect" onchange="switchClubTheme(this.value)">
       <option value="default">🌐 الثيم العام (كربون وذهب)</option>
       <option value="itti">🟡⚫ نادي الاتحاد (العميد)</option>
@@ -377,19 +439,19 @@
   <!-- رأس المنصة -->
   <header class="header">
     <div>
-      <div class="brand-title" id="brandTitle">المدرج الذكي • MATCHDAY SMART</div>
-      <div class="brand-sub" id="brandSub">سجل وتوثيق الحضور الرياضي التفاعلي</div>
+      <div class="brand-title" id="brandTitle">المدرج الذكي • MATCHDAY PASS</div>
+      <div class="brand-sub" id="brandSub">من التذكرة إلى مغادرة الملعب بتقنية NFC</div>
     </div>
     <span class="badge-nfc">📶 موثق NFC</span>
   </header>
 
-  <!-- بطاقة المشجع الرقمية -->
+  <!-- بطاقة المشجع وتراكم الحضور -->
   <section class="smart-card">
     <div class="card-watermark" id="cardWatermark">⚽</div>
     <div class="card-top">
       <div>
         <div style="font-weight: 900; font-size: 1rem; color: #FFF;" id="cardPassTitle">SMART SUPPORTER PASS</div>
-        <div style="font-size: 0.75rem; color: var(--primary-accent);" id="cardPassSub">عضوية حضور المباريات الميدانية</div>
+        <div style="font-size: 0.75rem; color: var(--primary-accent);" id="cardPassSub">عضوية الحضور الميداني الموثق</div>
       </div>
       <div class="card-id" id="cardPassId">SMART-PASS-2026</div>
     </div>
@@ -397,7 +459,7 @@
     <div class="card-stats">
       <div>
         <div class="stat-val" id="matchCount">0</div>
-        <div class="stat-label">المباريات الموثقة</div>
+        <div class="stat-label">مباريات وثقها القميص</div>
       </div>
       <div>
         <div class="stat-val" id="winCount">0</div>
@@ -405,22 +467,46 @@
       </div>
       <div>
         <div class="stat-val">100%</div>
-        <div class="stat-label">معدل الفوز بالقميص</div>
+        <div class="stat-label">تميمة الحظ</div>
       </div>
     </div>
   </section>
 
-  <!-- الأزرار الثلاثة -->
+  <!-- 1. محفظة مقعد التذكرة الذكي (المرحلة 1: قبل المباراة) -->
+  <section class="seat-pass-card">
+    <div class="section-title">
+      <span>🎫</span>
+      <span>محفظة المقعد والتذكرة الذكية</span>
+    </div>
+
+    <div class="seat-grid">
+      <div class="seat-item"><div class="seat-val" id="dispGate">-</div><div class="seat-lbl">البوابة</div></div>
+      <div class="seat-item"><div class="seat-val" id="dispSec">-</div><div class="seat-lbl">المربع</div></div>
+      <div class="seat-item"><div class="seat-val" id="dispRow">-</div><div class="seat-lbl">الصف</div></div>
+      <div class="seat-item"><div class="seat-val" id="dispSeat">-</div><div class="seat-lbl">المقعد</div></div>
+    </div>
+
+    <div class="seat-inputs">
+      <input type="text" id="inGate" placeholder="بوابة" class="seat-input">
+      <input type="text" id="inSec" placeholder="مربع" class="seat-input">
+      <input type="text" id="inRow" placeholder="صف" class="seat-input">
+      <input type="text" id="inSeat" placeholder="مقعد" class="seat-input">
+    </div>
+
+    <button class="tool-btn" onclick="saveSeatDetails()">💾 تثبيت بيانات مقعد التذكرة في القميص</button>
+  </section>
+
+  <!-- 2. أزرار قلب الحدث (المرحلة 3 و 4: أثناء المباراة) -->
   <section class="action-grid">
     <label class="action-btn" for="cameraInput">
       <span class="icon">📷</span>
-      <span>التقاط لقطة / فيديو</span>
+      <span>لقطة / فيديو حي</span>
       <input type="file" id="cameraInput" accept="image/*,video/*" capture="environment" style="display: none;" onchange="handleMediaCapture(event)">
     </label>
 
     <button class="action-btn" onclick="captureLocation()">
       <span class="icon">📍</span>
-      <span>توثيق الحضور بالخريطة</span>
+      <span>توثيق الحضور</span>
     </button>
 
     <button class="action-btn sos" onclick="openSOS()">
@@ -429,36 +515,58 @@
     </button>
   </section>
 
-  <!-- مساحة المعاينة الحية -->
+  <!-- صندوق المعاينة الحية -->
   <section class="preview-box" id="previewContainer">
     <div class="empty-msg" id="emptyMsg">
-      لم توثق أي لحظة حتى الآن.<br>اضغط زر الكاميرا لتسجيل فيديو أو التقاط صورة من قلب الحدث 🏟️
+      لم توثق أي لحظة حتى الآن.<br>اضغط زر الكاميرا لحفظ لقطة أو فيديو من الملعب 🏟️
     </div>
     <img id="imagePreview" style="display: none;" alt="لقطة المباراة">
     <video id="videoPreview" controls autoplay loop playsinline style="display: none;"></video>
   </section>
 
-  <!-- بطاقة الموقع الجغرافي -->
-  <section class="location-card" id="locationCard">
-    <div style="font-weight: 700; color: #FFF;">📌 موقع الحضور المثبت:</div>
-    <div id="locationCoords" style="color: #CCC;">جاري جلب إحداثيات موقعك الجغرافي...</div>
-    <a id="mapLink" href="#" target="_blank">🗺️ عرض الإحداثيات على خرائط Google</a>
+  <!-- 3. أدوات العودة والمواقف (المرحلة 2 و 5: الطريق والخروج) -->
+  <section class="tools-grid">
+    <!-- بوصلة السيارة والمواقف -->
+    <div class="tool-box">
+      <div style="font-size: 0.78rem; font-weight: 800; color: #FFF;">🚗 موقف سيارتي</div>
+      <button class="tool-btn" onclick="saveCarLocation()">📌 تثبيت موقع الركن</button>
+      <button class="tool-btn" id="findCarBtn" onclick="findMyCar()" style="display: none;">🧭 سهم الرجوع للسيارة</button>
+    </div>
+
+    <!-- منارة العثور على الأصدقاء -->
+    <div class="tool-box">
+      <div style="font-size: 0.78rem; font-weight: 800; color: #FFF;">👥 منارة المدرج</div>
+      <button class="tool-btn" onclick="activateBeacon()">💡 إشارة ضوئية وسط الزحام</button>
+      <div style="font-size: 0.65rem; color: var(--text-muted); text-align: center;">ارفع الهاتف ليراك أصدقاؤك</div>
+    </div>
   </section>
 
-  <!-- تذييل الصفحة -->
+  <!-- بطاقة الموقع الجغرافي المثبت -->
+  <section id="locationCard" style="display:none; background: rgba(255,255,255,0.03); border: 1px dashed var(--primary-accent); border-radius: 12px; padding: 12px; font-size: 0.8rem;">
+    <div style="font-weight: 700; color: #FFF;">📌 موقع الحضور المثبت:</div>
+    <div id="locationCoords" style="color: #CCC; margin: 4px 0;"></div>
+    <a id="mapLink" href="#" target="_blank" style="color: var(--primary-accent); text-decoration: underline;">🗺️ فتح الموقع على خرائط Google</a>
+  </section>
+
   <footer>
     ابتكار وتطوير: <strong>نبيل النمر</strong> © 2026<br>
-    المنصة التفاعلية المدمجة بتقنية NFC للأزياء والقمصان الرياضية
+    المنصة التفاعلية المتكاملة بتقنية NFC للأزياء الرياضية
   </footer>
 
 </div>
 
-<!-- نافذة طوارئ الملاعب (أسعفني) -->
+<!-- منارة الأصدقاء (Beacon Fullscreen) -->
+<div class="beacon-overlay" id="beaconOverlay" onclick="closeBeacon()">
+  <div class="beacon-text" id="beaconText">أنا هنا! 📍<br><span style="font-size: 1.5rem;" id="beaconGate">بوابة المدرج</span></div>
+  <div style="font-size: 0.9rem; opacity: 0.8;">(انقر في أي مكان للإغلاق)</div>
+</div>
+
+<!-- نافذة الطوارئ (أسعفني) -->
 <div class="sos-modal" id="sosModal">
   <div class="sos-content">
     <div style="font-size: 2.5rem;">🚨</div>
     <h2 style="color: var(--danger-red);">نداء طوارئ الملاعب</h2>
-    <p style="font-size: 0.82rem; color: #BBB;">استخدم هذه الخيارات لطلب المساعدة الطبية أو مشاركة إحداثيات موقعك الحالي بدقة داخل الاستاد أو محيطه.</p>
+    <p style="font-size: 0.82rem; color: #BBB;">استخدم هذه الخيارات لطلب المساعدة الطبية أو مشاركة موقعك الدقيق داخل الملعب أو محيطه.</p>
 
     <a href="tel:997" class="sos-btn sos-call">
       📞 اتصال بالهلال الأحمر (997)
@@ -478,90 +586,127 @@
   let currentLat = null;
   let currentLng = null;
 
-  // خريطة بيانات الأندية لتحديث النصوص والرموز عند التبديل
   const clubData = {
-    default: {
-      title: "المدرج الذكي • MATCHDAY SMART",
-      sub: "سجل وتوثيق الحضور الرياضي التفاعلي",
-      cardTitle: "SMART SUPPORTER PASS",
-      cardSub: "عضوية حضور المباريات الميدانية",
-      cardId: "SMART-PASS-2026",
-      watermark: "⚽"
-    },
-    itti: {
-      title: "مدرج الذهب • ITTI PASS",
-      sub: "سجل حضور مباريات العميد التفاعلي",
-      cardTitle: "TIGER SUPPORTER CARD",
-      cardSub: "مشجع اتحادي ذهبي",
-      cardId: "ITTI-NFC-2026",
-      watermark: "🐅"
-    },
-    hilal: {
-      title: "الموج الأزرق • HILAL PASS",
-      sub: "سجل حضور مباريات الزعيم التفاعلي",
-      cardTitle: "BLUE WAVE SUPPORTER",
-      cardSub: "مشجع هلالي موثق",
-      cardId: "HILAL-NFC-2026",
-      watermark: "🌊"
-    },
-    nassr: {
-      title: "شمس النصر • NASSR PASS",
-      sub: "سجل حضور مباريات العالمي التفاعلي",
-      cardTitle: "KNIGHTS OF NAJD PASS",
-      cardSub: "مشجع نصراوي موثق",
-      cardId: "NASSR-NFC-2026",
-      watermark: "🏆"
-    },
-    ahli: {
-      title: "مدرج الراقي • AHLI PASS",
-      sub: "سجل حضور مباريات سفير الوطن التفاعلي",
-      cardTitle: "ROYAL GREEN SUPPORTER",
-      cardSub: "مشجع أهلاوي ملكي",
-      cardId: "AHLI-NFC-2026",
-      watermark: "🏰"
-    },
-    shabab: {
-      title: "عرين الليوث • SHABAB PASS",
-      sub: "سجل حضور مباريات الليث الشبابي",
-      cardTitle: "WHITE LION SUPPORTER",
-      cardSub: "مشجع شبابي موثق",
-      cardId: "SHABAB-NFC-2026",
-      watermark: "🦁"
-    },
-    ksa: {
-      title: "الصقور الخضر • SAUDI PASS",
-      sub: "سجل مؤازرة المنتخب السعودي في البطولات",
-      cardTitle: "GREEN FALCONS SUPPORTER",
-      cardSub: "مشجع الصقور الخضر",
-      cardId: "KSA-FALCONS-2026",
-      watermark: "🦅"
-    }
+    default: { title: "المدرج الذكي • MATCHDAY PASS", sub: "سجل الحضور الرياضي التفاعلي", cardTitle: "SMART SUPPORTER PASS", cardSub: "عضوية الحضور الميداني الموثق", cardId: "SMART-PASS-2026", watermark: "⚽" },
+    itti: { title: "مدرج الذهب • ITTI PASS", sub: "سجل حضور مباريات العميد", cardTitle: "TIGER SUPPORTER CARD", cardSub: "مشجع اتحادي ذهبي", cardId: "ITTI-NFC-2026", watermark: "🐅" },
+    hilal: { title: "الموج الأزرق • HILAL PASS", sub: "سجل حضور مباريات الزعيم", cardTitle: "BLUE WAVE SUPPORTER", cardSub: "مشجع هلالي موثق", cardId: "HILAL-NFC-2026", watermark: "🌊" },
+    nassr: { title: "شمس النصر • NASSR PASS", sub: "سجل حضور مباريات العالمي", cardTitle: "KNIGHTS OF NAJD PASS", cardSub: "مشجع نصراوي موثق", cardId: "NASSR-NFC-2026", watermark: "🏆" },
+    ahli: { title: "مدرج الراقي • AHLI PASS", sub: "سجل حضور مباريات سفير الوطن", cardTitle: "ROYAL GREEN SUPPORTER", cardSub: "مشجع أهلاوي ملكي", cardId: "AHLI-NFC-2026", watermark: "🏰" },
+    shabab: { title: "عرين الليوث • SHABAB PASS", sub: "سجل حضور مباريات الليث", cardTitle: "WHITE LION SUPPORTER", cardSub: "مشجع شبابي موثق", cardId: "SHABAB-NFC-2026", watermark: "🦁" },
+    ksa: { title: "الصقور الخضر • SAUDI PASS", sub: "سجل مؤازرة المنتخب السعودي", cardTitle: "GREEN FALCONS SUPPORTER", cardSub: "مشجع الصقور الخضر", cardId: "KSA-FALCONS-2026", watermark: "🦅" }
   };
 
-  // تبديل هوية وثيم الصفحة فورياً
+  // تهيئة الصفحة وقراءة معلمات الرابط واسترجاع التخزين
+  window.addEventListener('DOMContentLoaded', () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const clubParam = urlParams.get('club');
+
+    if (clubParam && clubData[clubParam]) {
+      switchClubTheme(clubParam);
+      const clubSelect = document.getElementById('clubSelect');
+      if (clubSelect) clubSelect.value = clubParam;
+      const selectorBox = document.querySelector('.theme-selector-box');
+      if (selectorBox) selectorBox.style.display = 'none';
+    } else {
+      const savedTheme = localStorage.getItem('matchday_preferred_club');
+      if (savedTheme && clubData[savedTheme]) {
+        switchClubTheme(savedTheme);
+        const clubSelect = document.getElementById('clubSelect');
+        if (clubSelect) clubSelect.value = savedTheme;
+      }
+    }
+
+    // استرجاع بيانات المقعد المخزنة
+    const savedSeat = JSON.parse(localStorage.getItem('matchday_seat_info') || '{}');
+    if (savedSeat.gate) {
+      document.getElementById('dispGate').innerText = savedSeat.gate;
+      document.getElementById('dispSec').innerText = savedSeat.sec;
+      document.getElementById('dispRow').innerText = savedSeat.row;
+      document.getElementById('dispSeat').innerText = savedSeat.seat;
+    }
+
+    // استرجاع عداد المباريات
+    const savedCount = localStorage.getItem('matchday_count');
+    if (savedCount) document.getElementById('matchCount').innerText = savedCount;
+
+    // استرجاع موقع السيارة
+    if (localStorage.getItem('car_lat')) {
+      document.getElementById('findCarBtn').style.display = 'flex';
+    }
+  });
+
   function switchClubTheme(themeKey) {
     document.body.className = `theme-${themeKey}`;
     const info = clubData[themeKey] || clubData.default;
-
     document.getElementById('brandTitle').innerText = info.title;
     document.getElementById('brandSub').innerText = info.sub;
     document.getElementById('cardPassTitle').innerText = info.cardTitle;
     document.getElementById('cardPassSub').innerText = info.cardSub;
     document.getElementById('cardPassId').innerText = info.cardId;
     document.getElementById('cardWatermark').innerText = info.watermark;
+    localStorage.setItem('matchday_preferred_club', themeKey);
   }
 
-  // معالجة التقاط الوسائط للكاميرا
+  // حفظ تفاصيل المقعد
+  function saveSeatDetails() {
+    const seatInfo = {
+      gate: document.getElementById('inGate').value || '-',
+      sec: document.getElementById('inSec').value || '-',
+      row: document.getElementById('inRow').value || '-',
+      seat: document.getElementById('inSeat').value || '-'
+    };
+    localStorage.setItem('matchday_seat_info', JSON.stringify(seatInfo));
+    document.getElementById('dispGate').innerText = seatInfo.gate;
+    document.getElementById('dispSec').innerText = seatInfo.sec;
+    document.getElementById('dispRow').innerText = seatInfo.row;
+    document.getElementById('dispSeat').innerText = seatInfo.seat;
+    alert("✅ تم حفظ وتثبيت بيانات مقعد التذكرة في ذاكرة القميص!");
+  }
+
+  // تثبيت موقع السيارة والرجوع إليها
+  function saveCarLocation() {
+    if (!navigator.geolocation) return alert("الـ GPS غير مدعوم في جهازك.");
+    navigator.geolocation.getCurrentPosition((pos) => {
+      localStorage.setItem('car_lat', pos.coords.latitude);
+      localStorage.setItem('car_lng', pos.coords.longitude);
+      document.getElementById('findCarBtn').style.display = 'flex';
+      alert("✅ تم تثبيت موقع ركن سيارتك بنجاح! يمكنك العودة إليها لاحقاً بنقرة زر.");
+    }, () => alert("يرجى تفعيل خدمة الموقع لحفظ مكان السيارة."));
+  }
+
+  function findMyCar() {
+    const lat = localStorage.getItem('car_lat');
+    const lng = localStorage.getItem('car_lng');
+    if (lat && lng) {
+      window.open(`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}&travelmode=walking`, '_blank');
+    }
+  }
+
+  // منارة الأصدقاء
+  function activateBeacon() {
+    const overlay = document.getElementById('beaconOverlay');
+    const gateVal = document.getElementById('dispGate').innerText;
+    document.getElementById('beaconGate').innerText = gateVal !== '-' ? `عند بوابة ${gateVal}` : 'في مدرج الملعب';
+    overlay.style.display = 'flex';
+    overlay.classList.add('beacon-strobe');
+  }
+
+  function closeBeacon() {
+    const overlay = document.getElementById('beaconOverlay');
+    overlay.style.display = 'none';
+    overlay.classList.remove('beacon-strobe');
+  }
+
+  // الكاميرا والتوثيق
   function handleMediaCapture(event) {
     const file = event.target.files[0];
     if (!file) return;
 
-    const emptyMsg = document.getElementById('emptyMsg');
+    const fileUrl = URL.createObjectURL(file);
+    document.getElementById('emptyMsg').style.display = 'none';
+
     const imgPreview = document.getElementById('imagePreview');
     const vidPreview = document.getElementById('videoPreview');
-
-    const fileUrl = URL.createObjectURL(file);
-    emptyMsg.style.display = 'none';
 
     if (file.type.startsWith('video/')) {
       imgPreview.style.display = 'none';
@@ -573,45 +718,37 @@
       imgPreview.style.display = 'block';
     }
 
-    const matchCount = document.getElementById('matchCount');
-    matchCount.innerText = parseInt(matchCount.innerText) + 1;
+    const matchEl = document.getElementById('matchCount');
+    let cnt = (parseInt(matchEl.innerText) || 0) + 1;
+    matchEl.innerText = cnt;
+    localStorage.setItem('matchday_count', cnt);
   }
 
-  // قراءة الموقع الجغرافي وتثبيته
+  // الموقع الجغرافي
   function captureLocation() {
     const locCard = document.getElementById('locationCard');
     const locCoords = document.getElementById('locationCoords');
     const mapLink = document.getElementById('mapLink');
 
-    if (!navigator.geolocation) {
-      alert("خاصية تحديد الموقع الجغرافي غير مدعومة في جهازك.");
-      return;
-    }
-
-    locCard.style.display = 'flex';
+    if (!navigator.geolocation) return alert("خاصية تحديد الموقع غير مدعومة.");
+    locCard.style.display = 'block';
     locCoords.innerText = "جاري قراءة إحداثيات موقعك عبر الأقمار الصناعية...";
 
     navigator.geolocation.getCurrentPosition(
-      (position) => {
-        currentLat = position.coords.latitude;
-        currentLng = position.coords.longitude;
-
-        locCoords.innerHTML = `خط العرض: ${currentLat.toFixed(5)} | خط الطول: ${currentLng.toFixed(5)}<br><span style="color:var(--primary-accent);">✅ تم توثيق موقع الحضور وتثبيته على الخارطة بنجاح!</span>`;
+      (pos) => {
+        currentLat = pos.coords.latitude;
+        currentLng = pos.coords.longitude;
+        locCoords.innerHTML = `خط العرض: ${currentLat.toFixed(5)} | خط الطول: ${currentLng.toFixed(5)}<br><span style="color:var(--primary-accent);">✅ تم توثيق حضور المباراة بنجاح!</span>`;
         mapLink.href = `https://www.google.com/maps?q=${currentLat},${currentLng}`;
       },
-      (error) => {
-        locCoords.innerText = "تعذر تحديد الموقع. يرجى التأكد من تفعيل خدمة الـ GPS في الهاتف.";
-      },
+      () => locCoords.innerText = "تعذر تحديد الموقع. يرجى التأكد من تفعيل خدمة الـ GPS.",
       { enableHighAccuracy: true }
     );
   }
 
-  // إدارة نظام الاستغاثة
+  // الطوارئ
   function openSOS() {
-    const modal = document.getElementById('sosModal');
-    modal.style.display = 'flex';
-    modal.classList.add('sos-strobe');
-
+    document.getElementById('sosModal').style.display = 'flex';
     if (navigator.geolocation && !currentLat) {
       navigator.geolocation.getCurrentPosition((pos) => {
         currentLat = pos.coords.latitude;
@@ -621,18 +758,16 @@
   }
 
   function closeSOS() {
-    const modal = document.getElementById('sosModal');
-    modal.style.display = 'none';
-    modal.classList.remove('sos-strobe');
+    document.getElementById('sosModal').style.display = 'none';
   }
 
   function shareLocationWhatsApp() {
     if (currentLat && currentLng) {
       const mapUrl = `https://maps.google.com/?q=${currentLat},${currentLng}`;
-      const msg = encodeURIComponent(`🚨 نداء مساعدة عاجل! أنا في المدرج/محيط الملعب وهذا موقعي الجغرافي الدقيق:\n${mapUrl}`);
+      const msg = encodeURIComponent(`🚨 نداء مساعدة عاجل! أنا في الملعب/المحيط وهذا موقعي الجغرافي:\n${mapUrl}`);
       window.open(`https://api.whatsapp.com/send?text=${msg}`, '_blank');
     } else {
-      alert("جاري جلب إحداثياتك أولاً، يرجى الانتظار للحظات...");
+      alert("جاري جلب إحداثياتك أولاً، انتظر لحظات...");
       navigator.geolocation.getCurrentPosition((pos) => {
         currentLat = pos.coords.latitude;
         currentLng = pos.coords.longitude;

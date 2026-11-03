@@ -393,7 +393,39 @@
       line-height: 1.5;
     }
 
-    /* نافذة خيارات الكاميرا المنبثقة */
+    /* أزرار المشاركة على السناب والإنستغرام */
+    .story-share-container {
+      display: flex;
+      gap: 8px;
+      margin-top: 4px;
+    }
+    .story-btn {
+      flex: 1;
+      padding: 10px 8px;
+      border-radius: 12px;
+      font-weight: 800;
+      font-size: 0.75rem;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      color: #FFF;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      transition: transform 0.2s;
+    }
+    .story-btn:active {
+      transform: scale(0.96);
+    }
+    .story-btn.snap {
+      background: linear-gradient(135deg, #FFFC00, #FFE500);
+      color: #000;
+    }
+    .story-btn.insta {
+      background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+    }
+
     .camera-modal {
       position: fixed;
       inset: 0;
@@ -611,7 +643,6 @@
 
   <!-- أزرار الإجراءات الميدانية -->
   <section class="action-grid">
-    <!-- زر فتح خيارات الكاميرا الذكية -->
     <button class="action-btn" onclick="openCameraSheet()">
       <span class="icon">📷</span>
       <span>لقطة / فيديو حي</span>
@@ -636,6 +667,18 @@
     <img id="imagePreview" style="display: none;" alt="لقطة المباراة">
     <video id="videoPreview" controls autoplay loop playsinline style="display: none;"></video>
   </section>
+
+  <!-- أزرار مشاركة الستوري (Snapchat & Instagram) -->
+  <div class="story-share-container" id="shareButtonsContainer">
+    <button class="story-btn snap" onclick="shareToStory('snapchat')">
+      <span>👻</span>
+      <span>مشاركة سناب شات</span>
+    </button>
+    <button class="story-btn insta" onclick="shareToStory('instagram')">
+      <span>📸</span>
+      <span>مشاركة إنستغرام ستوري</span>
+    </button>
+  </div>
 
   <!-- أدوات المواقف والمنارة -->
   <section class="tools-grid">
@@ -666,26 +709,23 @@
 
 </div>
 
-<!-- نافذة خيارات الكاميرا المنبثقة (Sheet) -->
+<!-- نافذة خيارات الكاميرا -->
 <div class="camera-modal" id="cameraModal" onclick="closeCameraSheet(event)">
   <div class="camera-sheet" onclick="event.stopPropagation()">
     <div class="sheet-title">اختر طريقة التوثيق في المدرج 🏟️</div>
     
-    <!-- 1. التقاط صورة فورية -->
     <label class="sheet-btn" for="directPhotoInput">
       <span>📸</span>
       <span>التقاط صورة فوتوغرافية حية</span>
       <input type="file" id="directPhotoInput" accept="image/*" capture="environment" style="display:none;" onchange="handleMediaCapture(event); closeCameraSheet();">
     </label>
 
-    <!-- 2. تسجيل فيديو حي مباشر -->
     <label class="sheet-btn" for="directVideoInput">
       <span>🎥</span>
       <span>تسجيل فيديو حي من المدرج</span>
       <input type="file" id="directVideoInput" accept="video/*" capture="environment" style="display:none;" onchange="handleMediaCapture(event); closeCameraSheet();">
     </label>
 
-    <!-- 3. اختيار من الاستوديو -->
     <label class="sheet-btn" for="galleryInput">
       <span>🖼️</span>
       <span>اختيار من ألبوم الصور والفيديو</span>
@@ -726,6 +766,7 @@
 <script>
   let currentLat = null;
   let currentLng = null;
+  let currentCapturedFile = null;
 
   const clubData = {
     default: {
@@ -915,7 +956,6 @@
     overlay.classList.remove('beacon-strobe');
   }
 
-  // إدارة نافذة الكاميرا المنبثقة
   function openCameraSheet() {
     document.getElementById('cameraModal').style.display = 'flex';
   }
@@ -928,6 +968,7 @@
     const file = event.target.files[0];
     if (!file) return;
 
+    currentCapturedFile = file;
     const fileUrl = URL.createObjectURL(file);
     document.getElementById('emptyMsg').style.display = 'none';
 
@@ -948,6 +989,47 @@
     let cnt = (parseInt(matchEl.innerText) || 0) + 1;
     matchEl.innerText = cnt;
     localStorage.setItem('matchday_count', cnt);
+  }
+
+  // دالة المشاركة على سناب شات وإنستغرام ستوري
+  async function shareToStory(platform) {
+    const seatInfo = JSON.parse(localStorage.getItem('matchday_seat_info') || '{}');
+    const seatText = seatInfo.gate ? `بوابة ${seatInfo.gate} | مربع ${seatInfo.sec}` : 'في قلب المدرج';
+    const currentTitle = document.getElementById('brandTitle').innerText;
+    const shareText = `من قلب الحدث في ${currentTitle} 🏟️⚽\nمقعدي: ${seatText}\nموثق بالقميص الذكي عبر NFC!`;
+    const shareUrl = window.location.href;
+
+    // استخدام Web Share API إذا كانت مدعومة مع الملف المرفق
+    if (navigator.canShare && currentCapturedFile && navigator.canShare({ files: [currentCapturedFile] })) {
+      try {
+        await navigator.share({
+          files: [currentCapturedFile],
+          title: currentTitle,
+          text: shareText
+        });
+        return;
+      } catch (err) {
+        console.log("إلغاء المشاركة أو عدم اكتمالها");
+      }
+    } else if (navigator.share) {
+      try {
+        await navigator.share({
+          title: currentTitle,
+          text: shareText,
+          url: shareUrl
+        });
+        return;
+      } catch (err) {
+        console.log("تم إلغاء المشاركة");
+      }
+    }
+
+    // بديل مباشر في حال عدم دعم المشاركة المدمجة
+    if (platform === 'snapchat') {
+      window.open(`https://www.snapchat.com/scan?attachmentUrl=${encodeURIComponent(shareUrl)}`, '_blank');
+    } else {
+      window.open(`https://www.instagram.com/`, '_blank');
+    }
   }
 
   function captureLocation() {

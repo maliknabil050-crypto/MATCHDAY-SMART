@@ -75,7 +75,7 @@
 
     html, body {
       max-width: 100%;
-      overflow-x: hidden; /* لمنع أي انزلاق أو قص جانبي نهائياً */
+      overflow-x: hidden;
     }
 
     body {
@@ -95,7 +95,6 @@
       gap: 14px;
     }
 
-    /* صندوق اختيار الفريق */
     .theme-selector-box {
       background: rgba(255, 255, 255, 0.04);
       border: 1px solid rgba(255, 255, 255, 0.1);
@@ -121,10 +120,9 @@
       font-weight: 700;
       outline: none;
       width: 100%;
-      min-width: 0; /* يمنع تمدد القائمة عن الشاشة */
+      min-width: 0;
     }
 
-    /* رأس الصفحة */
     .header {
       display: flex;
       justify-content: space-between;
@@ -157,7 +155,6 @@
       white-space: nowrap;
     }
 
-    /* بطاقة الهوية الرقمية */
     .smart-card {
       background: linear-gradient(145deg, #161820, #0B0C0E);
       border: 1px solid var(--border-accent);
@@ -214,7 +211,53 @@
       margin-top: 2px;
     }
 
-    /* بطاقة التذكرة والمقعد */
+    .booking-section {
+      background: var(--card-bg);
+      border: 1px solid var(--border-accent);
+      border-radius: 14px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      position: relative;
+    }
+    .section-title {
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: var(--primary-accent);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .booking-btn-main {
+      background: linear-gradient(135deg, var(--primary-accent), #B37D22);
+      color: #000;
+      font-weight: 900;
+      font-size: 0.85rem;
+      text-decoration: none;
+      padding: 12px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+      transition: transform 0.2s;
+    }
+    .booking-btn-main:active {
+      transform: scale(0.97);
+    }
+    .booking-info-box {
+      background: rgba(0,0,0,0.3);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 8px;
+      padding: 8px 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.7rem;
+    }
+
     .seat-pass-card {
       background: var(--card-bg);
       border: 1px solid var(--border-accent);
@@ -223,14 +266,6 @@
       display: flex;
       flex-direction: column;
       gap: 10px;
-    }
-    .section-title {
-      font-size: 0.8rem;
-      font-weight: 800;
-      color: var(--primary-accent);
-      display: flex;
-      align-items: center;
-      gap: 6px;
     }
     .seat-grid {
       display: grid;
@@ -271,7 +306,6 @@
       min-width: 0;
     }
 
-    /* أزرار الإجراءات السريعة */
     .action-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -304,7 +338,6 @@
       font-size: 1.25rem;
     }
 
-    /* أدوات الخروج والمواقف */
     .tools-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -335,7 +368,6 @@
       width: 100%;
     }
 
-    /* شاشة المعاينة */
     .preview-box {
       background: #111317;
       border: 1px solid rgba(255,255,255,0.08);
@@ -361,7 +393,56 @@
       line-height: 1.5;
     }
 
-    /* المنارة الضوئية */
+    /* نافذة خيارات الكاميرا المنبثقة */
+    .camera-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      z-index: 9999;
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      backdrop-filter: blur(8px);
+    }
+    .camera-sheet {
+      background: #171920;
+      border-top: 1px solid var(--border-accent);
+      border-radius: 20px 20px 0 0;
+      padding: 20px 16px 30px;
+      width: 100%;
+      max-width: 440px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .sheet-title {
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: var(--primary-accent);
+      text-align: center;
+      margin-bottom: 4px;
+    }
+    .sheet-btn {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 12px;
+      color: #FFF;
+      font-weight: 700;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+    }
+    .sheet-btn.close {
+      background: #252830;
+      border: none;
+      justify-content: center;
+      color: var(--text-muted);
+      margin-top: 6px;
+    }
+
     .beacon-overlay {
       position: fixed;
       inset: 0;
@@ -382,7 +463,6 @@
       to { background-color: #000; color: #FFF; }
     }
 
-    /* نافذة الطوارئ */
     .sos-modal {
       position: fixed;
       inset: 0;
@@ -436,7 +516,6 @@
 
 <div class="container">
 
-  <!-- قائمة اختيار الثيم -->
   <div class="theme-selector-box">
     <span class="theme-label">🎨 هوية الفريق:</span>
     <select class="theme-select" id="clubSelect" onchange="switchClubTheme(this.value)">
@@ -450,7 +529,6 @@
     </select>
   </div>
 
-  <!-- رأس المنصة -->
   <header class="header">
     <div>
       <div class="brand-title" id="brandTitle">المدرج الذكي • MATCHDAY PASS</div>
@@ -459,7 +537,6 @@
     <span class="badge-nfc">📶 موثق NFC</span>
   </header>
 
-  <!-- بطاقة المشجع -->
   <section class="smart-card">
     <div class="card-watermark" id="cardWatermark">⚽</div>
     <div class="card-top">
@@ -486,11 +563,33 @@
     </div>
   </section>
 
-  <!-- محفظة المقعد والتذكرة الذكية -->
+  <!-- قسم حجز التذاكر -->
+  <section class="booking-section">
+    <div class="section-title">
+      <span>🎟️</span>
+      <span id="bookingSectionTitle">حجز تذاكر المباريات الرسمية</span>
+    </div>
+
+    <div class="booking-info-box">
+      <span style="color: var(--text-muted);">المنصة الرسمية المعتمدة:</span>
+      <strong style="color: var(--primary-accent);" id="bookingPlatformName">Webook / منصة النادي</strong>
+    </div>
+
+    <a id="ticketBookLink" href="https://webook.com" target="_blank" class="booking-btn-main">
+      <span>🏟️</span>
+      <span id="ticketBookBtnText">شراء وحجز التذكرة الآن</span>
+    </a>
+  </section>
+
+  <!-- محفظة المقعد والتذكرة -->
   <section class="seat-pass-card">
     <div class="section-title">
-      <span>🎫</span>
+      <span>🪑</span>
       <span>محفظة المقعد والتذكرة الذكية</span>
+    </div>
+
+    <div style="font-size: 0.68rem; color: var(--text-muted); margin-bottom: 4px;">
+      بعد شراء التذكرة، ثبّت بيانات مقعدك لتبقى في قميصك:
     </div>
 
     <div class="seat-grid">
@@ -510,13 +609,13 @@
     <button class="tool-btn" onclick="saveSeatDetails()">💾 تثبيت بيانات المقعد في القميص</button>
   </section>
 
-  <!-- أزرار الإجراءات السريعة -->
+  <!-- أزرار الإجراءات الميدانية -->
   <section class="action-grid">
-    <label class="action-btn" for="cameraInput">
+    <!-- زر فتح خيارات الكاميرا الذكية -->
+    <button class="action-btn" onclick="openCameraSheet()">
       <span class="icon">📷</span>
       <span>لقطة / فيديو حي</span>
-      <input type="file" id="cameraInput" accept="image/*,video/*" capture="environment" style="display: none;" onchange="handleMediaCapture(event)">
-    </label>
+    </button>
 
     <button class="action-btn" onclick="captureLocation()">
       <span class="icon">📍</span>
@@ -529,7 +628,7 @@
     </button>
   </section>
 
-  <!-- صندوق المعاينة الحية -->
+  <!-- صندوق المعاينة -->
   <section class="preview-box" id="previewContainer">
     <div class="empty-msg" id="emptyMsg">
       لم توثق أي لحظة حتى الآن.<br>اضغط زر الكاميرا لتصوير فيديو أو لقطة من الملعب 🏟️
@@ -567,6 +666,36 @@
 
 </div>
 
+<!-- نافذة خيارات الكاميرا المنبثقة (Sheet) -->
+<div class="camera-modal" id="cameraModal" onclick="closeCameraSheet(event)">
+  <div class="camera-sheet" onclick="event.stopPropagation()">
+    <div class="sheet-title">اختر طريقة التوثيق في المدرج 🏟️</div>
+    
+    <!-- 1. التقاط صورة فورية -->
+    <label class="sheet-btn" for="directPhotoInput">
+      <span>📸</span>
+      <span>التقاط صورة فوتوغرافية حية</span>
+      <input type="file" id="directPhotoInput" accept="image/*" capture="environment" style="display:none;" onchange="handleMediaCapture(event); closeCameraSheet();">
+    </label>
+
+    <!-- 2. تسجيل فيديو حي مباشر -->
+    <label class="sheet-btn" for="directVideoInput">
+      <span>🎥</span>
+      <span>تسجيل فيديو حي من المدرج</span>
+      <input type="file" id="directVideoInput" accept="video/*" capture="environment" style="display:none;" onchange="handleMediaCapture(event); closeCameraSheet();">
+    </label>
+
+    <!-- 3. اختيار من الاستوديو -->
+    <label class="sheet-btn" for="galleryInput">
+      <span>🖼️</span>
+      <span>اختيار من ألبوم الصور والفيديو</span>
+      <input type="file" id="galleryInput" accept="image/*,video/*" style="display:none;" onchange="handleMediaCapture(event); closeCameraSheet();">
+    </label>
+
+    <button class="sheet-btn close" onclick="closeCameraSheet()">إلغاء</button>
+  </div>
+</div>
+
 <!-- منارة الأصدقاء -->
 <div class="beacon-overlay" id="beaconOverlay" onclick="closeBeacon()">
   <div style="font-size: 2.5rem; font-weight: 900; padding: 20px;" id="beaconText">أنا هنا! 📍<br><span style="font-size: 1.4rem;" id="beaconGate">بوابة المدرج</span></div>
@@ -599,13 +728,90 @@
   let currentLng = null;
 
   const clubData = {
-    default: { title: "المدرج الذكي • MATCHDAY PASS", sub: "سجل الحضور الرياضي التفاعلي", cardTitle: "SMART SUPPORTER PASS", cardSub: "عضوية الحضور الميداني الموثق", cardId: "SMART-PASS-2026", watermark: "⚽" },
-    itti: { title: "مدرج الذهب • ITTI PASS", sub: "سجل حضور مباريات العميد", cardTitle: "TIGER SUPPORTER CARD", cardSub: "مشجع اتحادي ذهبي", cardId: "ITTI-NFC-2026", watermark: "🐅" },
-    hilal: { title: "الموج الأزرق • HILAL PASS", sub: "سجل حضور مباريات الزعيم", cardTitle: "BLUE WAVE SUPPORTER", cardSub: "مشجع هلالي موثق", cardId: "HILAL-NFC-2026", watermark: "🌊" },
-    nassr: { title: "شمس النصر • NASSR PASS", sub: "سجل حضور مباريات العالمي", cardTitle: "KNIGHTS OF NAJD PASS", cardSub: "مشجع نصراوي موثق", cardId: "NASSR-NFC-2026", watermark: "🏆" },
-    ahli: { title: "مدرج الراقي • AHLI PASS", sub: "سجل حضور مباريات سفير الوطن", cardTitle: "ROYAL GREEN SUPPORTER", cardSub: "مشجع أهلاوي ملكي", cardId: "AHLI-NFC-2026", watermark: "🏰" },
-    shabab: { title: "عرين الليوث • SHABAB PASS", sub: "سجل حضور مباريات الليث", cardTitle: "WHITE LION SUPPORTER", cardSub: "مشجع شبابي موثق", cardId: "SHABAB-NFC-2026", watermark: "🦁" },
-    ksa: { title: "الصقور الخضر • SAUDI PASS", sub: "سجل مؤازرة المنتخب السعودي", cardTitle: "GREEN FALCONS SUPPORTER", cardSub: "مشجع الصقور الخضر", cardId: "KSA-FALCONS-2026", watermark: "🦅" }
+    default: {
+      title: "المدرج الذكي • MATCHDAY PASS",
+      sub: "سجل الحضور الرياضي التفاعلي",
+      cardTitle: "SMART SUPPORTER PASS",
+      cardSub: "عضوية الحضور الميداني الموثق",
+      cardId: "SMART-PASS-2026",
+      watermark: "⚽",
+      ticketTitle: "حجز تذاكر المباريات الرسمية",
+      ticketPlatform: "منصة Webook المعتمدة",
+      ticketUrl: "https://webook.com",
+      ticketBtn: "حجز تذكرة المباراة الرسمية"
+    },
+    itti: {
+      title: "مدرج الذهب • ITTI PASS",
+      sub: "سجل حضور مباريات العميد",
+      cardTitle: "TIGER SUPPORTER CARD",
+      cardSub: "مشجع اتحادي ذهبي",
+      cardId: "ITTI-NFC-2026",
+      watermark: "🐅",
+      ticketTitle: "حجز تذاكر مباريات نادي الاتحاد",
+      ticketPlatform: "منصة تذاكر العميد الرسمية",
+      ticketUrl: "https://tickets.ittihadclub.sa",
+      ticketBtn: "احجز مقعدك في مدرج الذهب 🟡⚫"
+    },
+    hilal: {
+      title: "الموج الأزرق • HILAL PASS",
+      sub: "سجل حضور مباريات الزعيم",
+      cardTitle: "BLUE WAVE SUPPORTER",
+      cardSub: "مشجع هلالي موثق",
+      cardId: "HILAL-NFC-2026",
+      watermark: "🌊",
+      ticketTitle: "حجز تذاكر مباريات نادي الهلال",
+      ticketPlatform: "منصة Blu Store / Webook",
+      ticketUrl: "https://webook.com",
+      ticketBtn: "احجز مقعدك مع الزعيم 🔵⚪"
+    },
+    nassr: {
+      title: "شمس النصر • NASSR PASS",
+      sub: "سجل حضور مباريات العالمي",
+      cardTitle: "KNIGHTS OF NAJD PASS",
+      cardSub: "مشجع نصراوي موثق",
+      cardId: "NASSR-NFC-2026",
+      watermark: "🏆",
+      ticketTitle: "حجز تذاكر مباريات نادي النصر",
+      ticketPlatform: "منصة الأول بارك / Webook",
+      ticketUrl: "https://webook.com",
+      ticketBtn: "احجز مقعدك في الأول بارك 🟡🔵"
+    },
+    ahli: {
+      title: "مدرج الراقي • AHLI PASS",
+      sub: "سجل حضور مباريات سفير الوطن",
+      cardTitle: "ROYAL GREEN SUPPORTER",
+      cardSub: "مشجع أهلاوي ملكي",
+      cardId: "AHLI-NFC-2026",
+      watermark: "🏰",
+      ticketTitle: "حجز تذاكر مباريات النادي الأهلي",
+      ticketPlatform: "منصة Webook المعتمدة",
+      ticketUrl: "https://webook.com",
+      ticketBtn: "احجز مقعدك مع الراقي 🟢⚪"
+    },
+    shabab: {
+      title: "عرين الليوث • SHABAB PASS",
+      sub: "سجل حضور مباريات الليث",
+      cardTitle: "WHITE LION SUPPORTER",
+      cardSub: "مشجع شبابي موثق",
+      cardId: "SHABAB-NFC-2026",
+      watermark: "🦁",
+      ticketTitle: "حجز تذاكر مباريات نادي الشباب",
+      ticketPlatform: "منصة Webook المعتمدة",
+      ticketUrl: "https://webook.com",
+      ticketBtn: "احجز مقعدك مع الليوث ⚪🔴"
+    },
+    ksa: {
+      title: "الصقور الخضر • SAUDI PASS",
+      sub: "سجل مؤازرة المنتخب السعودي",
+      cardTitle: "GREEN FALCONS SUPPORTER",
+      cardSub: "مشجع الصقور الخضر",
+      cardId: "KSA-FALCONS-2026",
+      watermark: "🦅",
+      ticketTitle: "حجز تذاكر مباريات المنتخب السعودي",
+      ticketPlatform: "منصة الاتحاد السعودي / Webook",
+      ticketUrl: "https://webook.com",
+      ticketBtn: "احجز مقعدك لمؤازرة الأخضر 🟢⚪"
+    }
   };
 
   window.addEventListener('DOMContentLoaded', () => {
@@ -646,12 +852,19 @@
   function switchClubTheme(themeKey) {
     document.body.className = `theme-${themeKey}`;
     const info = clubData[themeKey] || clubData.default;
+
     document.getElementById('brandTitle').innerText = info.title;
     document.getElementById('brandSub').innerText = info.sub;
     document.getElementById('cardPassTitle').innerText = info.cardTitle;
     document.getElementById('cardPassSub').innerText = info.cardSub;
     document.getElementById('cardPassId').innerText = info.cardId;
     document.getElementById('cardWatermark').innerText = info.watermark;
+
+    document.getElementById('bookingSectionTitle').innerText = info.ticketTitle;
+    document.getElementById('bookingPlatformName').innerText = info.ticketPlatform;
+    document.getElementById('ticketBookBtnText').innerText = info.ticketBtn;
+    document.getElementById('ticketBookLink').href = info.ticketUrl;
+
     localStorage.setItem('matchday_preferred_club', themeKey);
   }
 
@@ -700,6 +913,15 @@
     const overlay = document.getElementById('beaconOverlay');
     overlay.style.display = 'none';
     overlay.classList.remove('beacon-strobe');
+  }
+
+  // إدارة نافذة الكاميرا المنبثقة
+  function openCameraSheet() {
+    document.getElementById('cameraModal').style.display = 'flex';
+  }
+
+  function closeCameraSheet() {
+    document.getElementById('cameraModal').style.display = 'none';
   }
 
   function handleMediaCapture(event) {

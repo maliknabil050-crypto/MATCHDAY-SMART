@@ -271,16 +271,7 @@
   let startTime = null;
   let timerInterval = null;
   let currentClub = 'default';
-
-  // مؤثرات صوتية حقيقية عالية الجودة للمدرج والصافرات والاحتفال
-  const audioSounds = {
-    whistle: new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3'),
-    crowdChant: new Audio('https://assets.mixkit.co/active_storage/sfx/280/280-preview.mp3'),
-    goalCheer: new Audio('https://assets.mixkit.co/active_storage/sfx/270/270-preview.mp3'),
-    missSigh: new Audio('https://assets.mixkit.co/active_storage/sfx/271/271-preview.mp3')
-  };
-
-  audioSounds.crowdChant.loop = true;
+  let audioCtx = null;
 
   const clubTitles = {
     hilal: "الموج الأزرق 🔵⚪",
@@ -290,6 +281,84 @@
     shabab: "عرين الليث ⚪🔴",
     ksa: "صقور الوطن 🟢⚪"
   };
+
+  // نظام صوتي رقمي ناعم ونظيف
+  function getAudioContext() {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    return audioCtx;
+  }
+
+  // نبضة صوتية عميقة وهادئة (مثل دقات القلب التكتيكية)
+  function playHeartbeat() {
+    try {
+      const ctx = getAudioContext();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(80, ctx.currentTime);
+      gain.gain.setValueAtTime(0.12, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.12);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + 0.12);
+    } catch(e) {}
+  }
+
+  // نقرة توقف ناعمة ونظيفة
+  function playCleanStop() {
+    try {
+      const ctx = getAudioContext();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(520, ctx.currentTime);
+      gain.gain.setValueAtTime(0.15, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + 0.15);
+    } catch(e) {}
+  }
+
+  // نغمة فوز ذهبية مريحة وفخمة
+  function playWinChime() {
+    try {
+      const ctx = getAudioContext();
+      const freqs = [523.25, 659.25, 783.99, 1046.50]; // نغمات C Major فخمة
+      freqs.forEach((f, idx) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(f, ctx.currentTime + (idx * 0.1));
+        gain.gain.setValueAtTime(0.1, ctx.currentTime + (idx * 0.1));
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + (idx * 0.1) + 0.4);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(ctx.currentTime + (idx * 0.1));
+        osc.stop(ctx.currentTime + (idx * 0.1) + 0.4);
+      });
+    } catch(e) {}
+  }
+
+  // نغمة خسارة بسيطة وغير مزعجة
+  function playMissSound() {
+    try {
+      const ctx = getAudioContext();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(220, ctx.currentTime);
+      gain.gain.setValueAtTime(0.1, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.25);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + 0.25);
+    } catch(e) {}
+  }
 
   function selectMatchClub(clubKey) {
     currentClub = clubKey;
@@ -304,20 +373,14 @@
 
     if (challengeState === 'IDLE') {
       challengeState = 'RUNNING';
-      btn.innerText = "صافرة الحكم! أوقف العداد 🚨";
+      btn.innerText = "أوقف العداد الآن! 🛑";
       btn.classList.add('stop-btn');
-      
-      // تشغيل صافرة البداية وهتاف الجماهير التفاعلي
-      audioSounds.whistle.play().catch(()=>{});
-      audioSounds.crowdChant.currentTime = 0;
-      audioSounds.crowdChant.play().catch(()=>{});
-
+      playCleanStop();
       startMatchClock();
     } else if (challengeState === 'RUNNING') {
       challengeState = 'STOPPED';
       clearInterval(timerInterval);
-      
-      audioSounds.crowdChant.pause();
+      playCleanStop();
       evaluateScore();
     }
   }
@@ -328,6 +391,7 @@
     const targetMinute = 90;
     const clockEl = document.getElementById('matchClock');
     const timerBox = document.getElementById('timerBox');
+    let lastBeat = 0;
 
     timerInterval = setInterval(() => {
       const elapsed = Date.now() - startTime;
@@ -337,6 +401,12 @@
       const centis = Math.floor((currentMinute % 1) * 100);
       clockEl.innerText = `${String(mins).padStart(2, '0')}:${String(centis).padStart(2, '0')}`;
 
+      // نبض هادئ يتردد كل 15 دقيقة مباراة
+      if (mins % 15 === 0 && mins !== lastBeat) {
+        playHeartbeat();
+        lastBeat = mins;
+      }
+
       if (currentMinute >= 85) {
         timerBox.classList.add('blind-mode');
       }
@@ -344,14 +414,12 @@
       if (currentMinute > 96) {
         clearInterval(timerInterval);
         challengeState = 'STOPPED';
-        audioSounds.crowdChant.pause();
         evaluateScore();
       }
     }, 16);
   }
 
   function evaluateScore() {
-    audioSounds.whistle.play().catch(()=>{});
     const clockText = document.getElementById('matchClock').innerText;
     const parts = clockText.split(':');
     const stoppedMin = parseInt(parts[0], 10);
@@ -368,19 +436,19 @@
     const cardUnlockEl = document.getElementById('winnerNfcCardBox');
 
     if (isWinner) {
-      audioSounds.goalCheer.play().catch(()=>{});
+      playWinChime();
       iconEl.innerText = "🏆";
-      titleEl.innerText = "قووووول في التسعين!";
+      titleEl.innerText = "هدف في التسعين!";
       titleEl.style.color = "var(--primary-accent)";
-      descEl.innerHTML = `أوقفت العداد بدقة خيالية عند <strong style="color:#FFF;">${clockText}</strong>.<br>أثبتّ ولاء وبراعة مدرج <strong>${clubTitles[currentClub]}</strong>!`;
+      descEl.innerHTML = `أوقفت العداد بدقة عند <strong style="color:#FFF;">${clockText}</strong>.<br>استحققت بطاقة ناديك الذكية!`;
       cardUnlockEl.style.display = "block";
     } else {
-      audioSounds.missSigh.play().catch(()=>{});
+      playMissSound();
       iconEl.innerText = "⚽❌";
       titleEl.innerText = "مرّت بجوار القائم!";
       titleEl.style.color = "#E63946";
       
-      let note = stoppedMin < 90 ? "استعجلت التسديد قبل الصافرة!" : "تأخرت وضاعت الفرصة في الوقت القاتل!";
+      let note = stoppedMin < 90 ? "استعجلت التسديد قبل الوقت!" : "تأخرت وضاعت الفرصة!";
       descEl.innerHTML = `توقفك كان عند <strong style="color:#FFF;">${clockText}</strong>.<br>${note}`;
       cardUnlockEl.style.display = "none";
     }
@@ -389,7 +457,6 @@
   function resetChallenge() {
     challengeState = 'IDLE';
     clearInterval(timerInterval);
-    audioSounds.crowdChant.pause();
     document.getElementById('timerBox').classList.remove('blind-mode');
     document.getElementById('matchClock').innerText = "00:00";
     document.getElementById('mainActionBtn').innerText = "انطلاق المباراة ⏱️";

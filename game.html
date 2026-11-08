@@ -147,7 +147,6 @@
       padding: 32px 10px;
       margin-bottom: 15px;
       position: relative;
-      overflow: hidden;
     }
 
     #matchClock {
@@ -159,22 +158,19 @@
       display: block;
     }
 
-    .blind-mode #matchClock {
-      visibility: hidden;
-    }
-
-    .blind-text {
+    .clutch-alert {
       display: none;
       font-size: 0.85rem;
-      color: #E63946;
+      color: var(--primary-accent);
       font-weight: 900;
-      animation: blink 0.4s infinite alternate;
+      margin-top: 6px;
+      animation: pulseAlert 0.4s infinite alternate;
     }
-    .blind-mode .blind-text { display: block; }
-    @keyframes blink { from { opacity: 0.3; } to { opacity: 1; } }
+    .clutch-phase .clutch-alert { display: block; }
+    @keyframes pulseAlert { from { opacity: 0.4; } to { opacity: 1; } }
 
     .instruction-line {
-      font-size: 0.78rem;
+      font-size: 0.8rem;
       color: #CCC;
       margin-bottom: 18px;
     }
@@ -204,7 +200,6 @@
     .res-icon { font-size: 3.8rem; margin-bottom: 8px; }
     .res-title { font-size: 1.4rem; font-weight: 900; color: #FFF; margin-bottom: 8px; }
     
-    /* صندوق إبراز وقت التوقف */
     .stop-time-badge-box {
       background: rgba(0, 0, 0, 0.6);
       border: 1px dashed var(--border-accent);
@@ -267,10 +262,10 @@
     
     <div class="timer-display-box" id="timerBox">
       <span id="matchClock">00:00</span>
-      <div id="blindWarning" class="blind-text">⚠️ تعتيم تكتيكي.. اعتمد على حسّك!</div>
+      <div id="clutchAlert" class="clutch-alert">⚡ دقائق الحسم القاتلة (+90)!</div>
     </div>
 
-    <div class="instruction-line">المطلوب: أوقف العداد بين <strong>90:00</strong> و <strong>90:50</strong> بالضبط</div>
+    <div class="instruction-line">المطلوب: أوقف العداد في الوقت القاتل بين <strong>90:00</strong> و <strong>91:59</strong></div>
 
     <button id="mainActionBtn" class="action-trigger-btn" onclick="handleChallengeAction()">
       انطلاق المباراة ⏱️
@@ -282,7 +277,6 @@
     <div id="resultIcon" class="res-icon">🏆</div>
     <h3 id="resultTitle" class="res-title">هدف في التسعين!</h3>
     
-    <!-- عرض توقيت التوقف بشكل بارز ومستقل -->
     <div class="stop-time-badge-box">
       <span class="stop-time-label">توقيت إيقافك الدقيق:</span>
       <span class="stop-time-value" id="finalStoppedTimeDisplay">00:00</span>
@@ -306,8 +300,7 @@
   let currentClub = 'default';
   let audioCtx = null;
 
-  // حفظ التوقيت بدقة عددية
-  let currentExactMinute = 0;
+  let currentMinuteProgress = 0;
   let savedStopMinute = 0;
   let savedStopCentis = 0;
 
@@ -332,7 +325,7 @@
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
       osc.type = 'sine';
-      osc.frequency.setValueAtTime(80, ctx.currentTime);
+      osc.frequency.setValueAtTime(85, ctx.currentTime);
       gain.gain.setValueAtTime(0.12, ctx.currentTime);
       gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.12);
       osc.connect(gain);
@@ -414,9 +407,8 @@
       challengeState = 'STOPPED';
       clearInterval(timerInterval);
       
-      // التقاط التوقيت مباشرة من المتغير الرياضي لضمان الدقة
-      savedStopMinute = Math.floor(currentExactMinute);
-      savedStopCentis = Math.floor((currentExactMinute % 1) * 100);
+      savedStopMinute = Math.floor(currentMinuteProgress);
+      savedStopCentis = Math.floor((currentMinuteProgress % 1) * 100);
 
       playCleanStop();
       evaluateScore();
@@ -425,18 +417,24 @@
 
   function startMatchClock() {
     startTime = Date.now();
-    const duration = 9000;
-    const targetMinute = 90;
     const clockEl = document.getElementById('matchClock');
     const timerBox = document.getElementById('timerBox');
     let lastBeat = 0;
 
     timerInterval = setInterval(() => {
       const elapsed = Date.now() - startTime;
-      currentExactMinute = (elapsed / duration) * targetMinute;
+
+      // تقدم سلس ومنطقي: سريع في البداية ثم يبطئ عند الدقيقة 80 لإعطاء المتسابق فرصة الترقب والتركيز
+      if (elapsed <= 5000) {
+        // أول 5 ثوانٍ يصل من 0 إلى 80
+        currentMinuteProgress = (elapsed / 5000) * 80;
+      } else {
+        // بعد 5 ثوانٍ يتدرج بتمهل من 80 إلى 95 بمعدل مريح جداً للعين
+        currentMinuteProgress = 80 + ((elapsed - 5000) / 4000) * 15;
+      }
       
-      const mins = Math.floor(currentExactMinute);
-      const centis = Math.floor((currentExactMinute % 1) * 100);
+      const mins = Math.floor(currentMinuteProgress);
+      const centis = Math.floor((currentMinuteProgress % 1) * 100);
       clockEl.innerText = `${String(mins).padStart(2, '0')}:${String(centis).padStart(2, '0')}`;
 
       if (mins % 15 === 0 && mins !== lastBeat) {
@@ -444,15 +442,16 @@
         lastBeat = mins;
       }
 
-      if (currentExactMinute >= 85) {
-        timerBox.classList.add('blind-mode');
+      // تنبيه الحسم القاتل بدلاً من التعتيم
+      if (currentMinuteProgress >= 88) {
+        timerBox.classList.add('clutch-phase');
       }
 
-      if (currentExactMinute > 96) {
+      if (currentMinuteProgress >= 95) {
         clearInterval(timerInterval);
         challengeState = 'STOPPED';
-        savedStopMinute = Math.floor(currentExactMinute);
-        savedStopCentis = Math.floor((currentExactMinute % 1) * 100);
+        savedStopMinute = Math.floor(currentMinuteProgress);
+        savedStopCentis = Math.floor((currentMinuteProgress % 1) * 100);
         evaluateScore();
       }
     }, 16);
@@ -461,15 +460,14 @@
   function evaluateScore() {
     const timeFormatted = `${String(savedStopMinute).padStart(2, '0')}:${String(savedStopCentis).padStart(2, '0')}`;
     
-    // إزالة التعتيم وإظهار شاشة النتيجة
-    document.getElementById('timerBox').classList.remove('blind-mode');
+    document.getElementById('timerBox').classList.remove('clutch-phase');
     document.getElementById('timerStep').style.display = 'none';
     document.getElementById('resultStep').style.display = 'block';
 
-    // كتابة التوقيت في الخانة المخصصة
     document.getElementById('finalStoppedTimeDisplay').innerText = timeFormatted;
 
-    const isWinner = (savedStopMinute === 90 && savedStopCentis <= 50);
+    // نافذة الفوز المتوازنة: كامل الدقائق +90 (من 90:00 حتى 91:59)
+    const isWinner = (savedStopMinute === 90 || savedStopMinute === 91);
 
     const titleEl = document.getElementById('resultTitle');
     const descEl = document.getElementById('resultDesc');
@@ -479,9 +477,9 @@
     if (isWinner) {
       playWinChime();
       iconEl.innerText = "🏆";
-      titleEl.innerText = "هدف في التسعين!";
+      titleEl.innerText = "هدف قاتل في الـ +90!";
       titleEl.style.color = "var(--primary-accent)";
-      descEl.innerHTML = `توقيت أسطوري في اللحظة القاتلة!<br>أثبتّ براعتك واستحققت بطاقة <strong>${clubTitles[currentClub]}</strong> الذكية!`;
+      descEl.innerHTML = `توقيت مدروس وبراعة في اللحظة الحاسمة!<br>استحققت بطاقة <strong>${clubTitles[currentClub]}</strong> الذكية!`;
       cardUnlockEl.style.display = "block";
     } else {
       playMissSound();
@@ -490,7 +488,7 @@
       titleEl.style.color = "#E63946";
       
       let note = savedStopMinute < 90 ? "استعجلت التسديد قبل اكتمال الـ 90 دقيقة!" : "تأخرت وتجاوزت الوقت بدل الضائع المحدد!";
-      descEl.innerHTML = `${note}<br>حاول مجدداً لتضبط توقيت الصافرة بدقة.`;
+      descEl.innerHTML = `${note}<br>حاول مجدداً لتخطف الفوز في الوقت القاتل.`;
       cardUnlockEl.style.display = "none";
     }
   }
@@ -498,11 +496,11 @@
   function resetChallenge() {
     challengeState = 'IDLE';
     clearInterval(timerInterval);
-    currentExactMinute = 0;
+    currentMinuteProgress = 0;
     savedStopMinute = 0;
     savedStopCentis = 0;
 
-    document.getElementById('timerBox').classList.remove('blind-mode');
+    document.getElementById('timerBox').classList.remove('clutch-phase');
     document.getElementById('matchClock').innerText = "00:00";
     document.getElementById('mainActionBtn').innerText = "انطلاق المباراة ⏱️";
     document.getElementById('mainActionBtn').classList.remove('stop-btn');

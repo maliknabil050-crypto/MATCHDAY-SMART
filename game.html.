@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>تحدي صافرة الـ 90+ • عِـزوة</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary-accent: #E5A93C;
+      --border-accent: rgba(229, 169, 60, 0.4);
+      --bg-dark: #0D0E12;
+      --club-badge-bg: linear-gradient(135deg, #E5A93C, #B37D22);
+      --club-badge-text: #000;
+    }
+
+    body.theme-default {
+      --primary-accent: #E5A93C;
+      --border-accent: rgba(229, 169, 60, 0.4);
+      --club-badge-bg: linear-gradient(135deg, #E5A93C, #B37D22);
+      --club-badge-text: #000;
+    }
+    body.theme-hilal {
+      --primary-accent: #1958CD;
+      --border-accent: rgba(25, 88, 205, 0.5);
+      --club-badge-bg: linear-gradient(135deg, #1958CD, #0C2E75);
+      --club-badge-text: #FFF;
+    }
+    body.theme-nassr {
+      --primary-accent: #FEDB00;
+      --border-accent: rgba(254, 219, 0, 0.5);
+      --club-badge-bg: linear-gradient(135deg, #FEDB00, #0045A0);
+      --club-badge-text: #000;
+    }
+    body.theme-itti {
+      --primary-accent: #FEDB00;
+      --border-accent: rgba(254, 219, 0, 0.5);
+      --club-badge-bg: linear-gradient(135deg, #FEDB00, #C59B27);
+      --club-badge-text: #000;
+    }
+    body.theme-ahli {
+      --primary-accent: #008744;
+      --border-accent: rgba(0, 135, 68, 0.5);
+      --club-badge-bg: linear-gradient(135deg, #008744, #004D25);
+      --club-badge-text: #FFF;
+    }
+    body.theme-shabab {
+      --primary-accent: #E63946;
+      --border-accent: rgba(230, 57, 70, 0.5);
+      --club-badge-bg: linear-gradient(135deg, #E63946, #1A1A1A);
+      --club-badge-text: #FFF;
+    }
+    body.theme-ksa {
+      --primary-accent: #006C35;
+      --border-accent: rgba(0, 108, 53, 0.55);
+      --club-badge-bg: linear-gradient(135deg, #006C35, #D4AF37);
+      --club-badge-text: #FFF;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Tajawal', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background: radial-gradient(circle at top, #1A1D24, var(--bg-dark));
+      color: #FFF;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .challenge-card {
+      background: #111317;
+      border: 1px solid var(--border-accent);
+      box-shadow: 0 0 40px rgba(0,0,0,0.8), 0 0 15px var(--border-accent);
+      border-radius: 20px;
+      width: 100%;
+      max-width: 440px;
+      padding: 24px 20px;
+      text-align: center;
+    }
+
+    .title-gold {
+      color: var(--primary-accent);
+      font-size: 1.3rem;
+      font-weight: 900;
+      margin-bottom: 6px;
+    }
+
+    .sub-text {
+      font-size: 0.75rem;
+      color: #8E929C;
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    .clubs-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .club-pick-btn {
+      padding: 14px 10px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: #171920;
+      color: #FFF;
+      font-weight: 800;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: transform 0.15s, border-color 0.2s;
+    }
+    .club-pick-btn:active { transform: scale(0.96); }
+    .btn-hilal { border-right: 5px solid #1958CD; }
+    .btn-nassr { border-right: 5px solid #FEDB00; }
+    .btn-itti  { border-right: 5px solid #FEDB00; }
+    .btn-ahli  { border-right: 5px solid #008744; }
+    .btn-shabab{ border-right: 5px solid #E63946; }
+    .btn-ksa   { border-right: 5px solid #006C35; }
+
+    .match-badge {
+      display: inline-block;
+      padding: 5px 14px;
+      border-radius: 20px;
+      background: var(--club-badge-bg);
+      color: var(--club-badge-text);
+      font-size: 0.8rem;
+      font-weight: 900;
+      margin-bottom: 16px;
+    }
+
+    .timer-display-box {
+      background: #08090C;
+      border: 2px solid var(--border-accent);
+      border-radius: 16px;
+      padding: 32px 10px;
+      margin-bottom: 15px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #matchClock {
+      font-size: 3.8rem;
+      font-weight: 900;
+      font-family: monospace;
+      color: var(--primary-accent);
+      letter-spacing: 2px;
+      display: block;
+    }
+
+    .blind-mode #matchClock {
+      visibility: hidden;
+    }
+
+    .blind-text {
+      display: none;
+      font-size: 0.85rem;
+      color: #E63946;
+      font-weight: 900;
+      animation: blink 0.4s infinite alternate;
+    }
+    .blind-mode .blind-text { display: block; }
+    @keyframes blink { from { opacity: 0.3; } to { opacity: 1; } }
+
+    .instruction-line {
+      font-size: 0.78rem;
+      color: #CCC;
+      margin-bottom: 18px;
+    }
+
+    .action-trigger-btn {
+      width: 100%;
+      padding: 15px;
+      border-radius: 12px;
+      background: var(--primary-accent);
+      color: #000;
+      font-size: 1rem;
+      font-weight: 900;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    }
+    .action-trigger-btn.stop-btn {
+      background: #E63946;
+      color: #FFF;
+      animation: pulse 0.7s infinite alternate;
+    }
+    @keyframes pulse {
+      from { transform: scale(1); }
+      to { transform: scale(1.02); }
+    }
+
+    .res-icon { font-size: 3.8rem; margin-bottom: 8px; }
+    .res-title { font-size: 1.4rem; font-weight: 900; color: #FFF; margin-bottom: 8px; }
+    .res-desc { font-size: 0.82rem; color: #BBB; line-height: 1.6; margin-bottom: 18px; }
+    .nfc-unlock-anim {
+      padding: 14px;
+      border-radius: 12px;
+      background: rgba(0, 200, 83, 0.15);
+      border: 1px solid #00C853;
+      color: #69F0AE;
+      font-size: 0.9rem;
+      font-weight: 800;
+      margin-bottom: 15px;
+    }
+  </style>
+</head>
+<body class="theme-default">
+
+<div class="challenge-card">
+  
+  <!-- خطوة 1: اختيار راية النادي -->
+  <div id="clubStep">
+    <h2 class="title-gold">اختر راية مدرجك 🏟️</h2>
+    <p class="sub-text">اختر ناديك لضبط إيقاع التحدي لانتزاع بطاقة الـ NFC الفيزيائية</p>
+    
+    <div class="clubs-grid">
+      <button class="club-pick-btn btn-hilal" onclick="selectMatchClub('hilal')">🔵 الهلال</button>
+      <button class="club-pick-btn btn-nassr" onclick="selectMatchClub('nassr')">🟡 النصر</button>
+      <button class="club-pick-btn btn-itti" onclick="selectMatchClub('itti')">⚫ الاتحاد</button>
+      <button class="club-pick-btn btn-ahli" onclick="selectMatchClub('ahli')">🟢 الأهلي</button>
+      <button class="club-pick-btn btn-shabab" onclick="selectMatchClub('shabab')">🔴 الشباب</button>
+      <button class="club-pick-btn btn-ksa" onclick="selectMatchClub('ksa')">🦅 المنتخب</button>
+    </div>
+  </div>
+
+  <!-- خطوة 2: شاشة المؤقت وحبس الأنفاس -->
+  <div id="timerStep" style="display: none;">
+    <div class="match-badge" id="selectedClubBadge">الموج الأزرق</div>
+    
+    <div class="timer-display-box" id="timerBox">
+      <span id="matchClock">00:00</span>
+      <div id="blindWarning" class="blind-text">⚠️ تعتيم تكتيكي.. اعتمد على حسّك!</div>
+    </div>
+
+    <div class="instruction-line">المطلوب: أوقف العداد بين <strong>90:00</strong> و <strong>90:50</strong> بالضبط</div>
+
+    <button id="mainActionBtn" class="action-trigger-btn" onclick="handleChallengeAction()">
+      انطلاق المباراة ⏱️
+    </button>
+  </div>
+
+  <!-- خطوة 3: إعلان النتيجة -->
+  <div id="resultStep" style="display: none;">
+    <div id="resultIcon" class="res-icon">🏆</div>
+    <h3 id="resultTitle" class="res-title">هدف في التسعين!</h3>
+    <p id="resultDesc" class="res-desc"></p>
+    
+    <div id="winnerNfcCardBox" style="display: none;">
+      <div class="nfc-unlock-anim">📶 انفتحت الخزنة.. استلم بطاقتك الذكية!</div>
+    </div>
+
+    <button class="action-trigger-btn" onclick="resetChallenge()">خوض التحدي مجدداً 🔄</button>
+  </div>
+
+</div>
+
+<script>
+  let challengeState = 'IDLE';
+  let startTime = null;
+  let timerInterval = null;
+  let currentClub = 'default';
+  let audioCtx = null;
+
+  const clubTitles = {
+    hilal: "الموج الأزرق 🔵⚪",
+    nassr: "فارس نجد 🟡🔵",
+    itti: "مدرج الذهب 🟡⚫",
+    ahli: "قلعة الكؤوس 🟢⚪",
+    shabab: "عرين الليث ⚪🔴",
+    ksa: "صقور الوطن 🟢⚪"
+  };
+
+  function getAudioContext() {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    return audioCtx;
+  }
+
+  function playTone(freq, type, duration, vol = 0.2) {
+    try {
+      const ctx = getAudioContext();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, ctx.currentTime);
+      gain.gain.setValueAtTime(vol, ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start();
+      osc.stop(ctx.currentTime + duration);
+    } catch(e) {}
+  }
+
+  function playCrowdRoar() {
+    for (let i = 0; i < 6; i++) {
+      setTimeout(() => playTone(120 + Math.random() * 200, 'sawtooth', 1.2, 0.15), i * 150);
+    }
+  }
+
+  function playWhistle(long = false) {
+    playTone(2400, 'sine', long ? 0.8 : 0.25, 0.3);
+  }
+
+  function selectMatchClub(clubKey) {
+    currentClub = clubKey;
+    document.body.className = `theme-${clubKey}`;
+    document.getElementById('selectedClubBadge').innerText = clubTitles[clubKey] || "المدرج الذهبي";
+    document.getElementById('clubStep').style.display = 'none';
+    document.getElementById('timerStep').style.display = 'block';
+  }
+
+  function handleChallengeAction() {
+    const btn = document.getElementById('mainActionBtn');
+
+    if (challengeState === 'IDLE') {
+      challengeState = 'RUNNING';
+      btn.innerText = "صافرة الحكم! أوقف العداد 🚨";
+      btn.classList.add('stop-btn');
+      startMatchClock();
+    } else if (challengeState === 'RUNNING') {
+      challengeState = 'STOPPED';
+      clearInterval(timerInterval);
+      evaluateScore();
+    }
+  }
+
+  function startMatchClock() {
+    startTime = Date.now();
+    const duration = 9000;
+    const targetMinute = 90;
+    const clockEl = document.getElementById('matchClock');
+    const timerBox = document.getElementById('timerBox');
+
+    timerInterval = setInterval(() => {
+      const elapsed = Date.now() - startTime;
+      const currentMinute = (elapsed / duration) * targetMinute;
+      
+      const mins = Math.floor(currentMinute);
+      const centis = Math.floor((currentMinute % 1) * 100);
+      clockEl.innerText = `${String(mins).padStart(2, '0')}:${String(centis).padStart(2, '0')}`;
+
+      if (mins % 15 === 0 && centis < 10) {
+        playTone(180, 'triangle', 0.1, 0.1);
+      }
+
+      if (currentMinute >= 85) {
+        timerBox.classList.add('blind-mode');
+        if (mins % 3 === 0 && centis < 15) {
+          playTone(450, 'square', 0.08, 0.15);
+        }
+      }
+
+      if (currentMinute > 96) {
+        clearInterval(timerInterval);
+        challengeState = 'STOPPED';
+        evaluateScore();
+      }
+    }, 16);
+  }
+
+  function evaluateScore() {
+    playWhistle(true);
+    const clockText = document.getElementById('matchClock').innerText;
+    const parts = clockText.split(':');
+    const stoppedMin = parseInt(parts[0], 10);
+    const stoppedCentis = parseInt(parts[1], 10);
+
+    const isWinner = (stoppedMin === 90 && stoppedCentis <= 50);
+
+    document.getElementById('timerStep').style.display = 'none';
+    document.getElementById('resultStep').style.display = 'block';
+
+    const titleEl = document.getElementById('resultTitle');
+    const descEl = document.getElementById('resultDesc');
+    const iconEl = document.getElementById('resultIcon');
+    const cardUnlockEl = document.getElementById('winnerNfcCardBox');
+
+    if (isWinner) {
+      playCrowdRoar();
+      iconEl.innerText = "🏆";
+      titleEl.innerText = "قووووول في التسعين!";
+      titleEl.style.color = "var(--primary-accent)";
+      descEl.innerHTML = `أوقفت العداد بدقة خيالية عند <strong style="color:#FFF;">${clockText}</strong>.<br>أثبتّ ولاء وبراعة مدرج <strong>${clubTitles[currentClub]}</strong>!`;
+      cardUnlockEl.style.display = "block";
+    } else {
+      iconEl.innerText = "⚽❌";
+      titleEl.innerText = "مرّت بجوار القائم!";
+      titleEl.style.color = "#E63946";
+      
+      let note = stoppedMin < 90 ? "استعجلت التسديد قبل الصافرة!" : "تأخرت وضاعت الفرصة في الوقت القاتل!";
+      descEl.innerHTML = `توقفك كان عند <strong style="color:#FFF;">${clockText}</strong>.<br>${note}`;
+      cardUnlockEl.style.display = "none";
+    }
+  }
+
+  function resetChallenge() {
+    challengeState = 'IDLE';
+    clearInterval(timerInterval);
+    document.getElementById('timerBox').classList.remove('blind-mode');
+    document.getElementById('matchClock').innerText = "00:00";
+    document.getElementById('mainActionBtn').innerText = "انطلاق المباراة ⏱️";
+    document.getElementById('mainActionBtn').classList.remove('stop-btn');
+
+    document.getElementById('resultStep').style.display = 'none';
+    document.getElementById('timerStep').style.display = 'none';
+    document.getElementById('clubStep').style.display = 'block';
+  }
+</script>
+
+</body>
+</html>

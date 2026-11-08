@@ -262,10 +262,10 @@
     
     <div class="timer-display-box" id="timerBox">
       <span id="matchClock">00:00</span>
-      <div id="clutchAlert" class="clutch-alert">⚡ دقائق الحسم القاتلة (+90)!</div>
+      <div id="clutchAlert" class="clutch-alert">⚡ ترقّب الصافرة بدقة!</div>
     </div>
 
-    <div class="instruction-line">المطلوب: أوقف العداد في الوقت القاتل بين <strong>90:00</strong> و <strong>91:59</strong></div>
+    <div class="instruction-line">المطلوب: أوقف العداد بين <strong>90:00</strong> و <strong>90:50</strong> بالضبط</div>
 
     <button id="mainActionBtn" class="action-trigger-btn" onclick="handleChallengeAction()">
       انطلاق المباراة ⏱️
@@ -424,12 +424,9 @@
     timerInterval = setInterval(() => {
       const elapsed = Date.now() - startTime;
 
-      // تقدم سلس ومنطقي: سريع في البداية ثم يبطئ عند الدقيقة 80 لإعطاء المتسابق فرصة الترقب والتركيز
       if (elapsed <= 5000) {
-        // أول 5 ثوانٍ يصل من 0 إلى 80
         currentMinuteProgress = (elapsed / 5000) * 80;
       } else {
-        // بعد 5 ثوانٍ يتدرج بتمهل من 80 إلى 95 بمعدل مريح جداً للعين
         currentMinuteProgress = 80 + ((elapsed - 5000) / 4000) * 15;
       }
       
@@ -442,7 +439,6 @@
         lastBeat = mins;
       }
 
-      // تنبيه الحسم القاتل بدلاً من التعتيم
       if (currentMinuteProgress >= 88) {
         timerBox.classList.add('clutch-phase');
       }
@@ -466,8 +462,8 @@
 
     document.getElementById('finalStoppedTimeDisplay').innerText = timeFormatted;
 
-    // نافذة الفوز المتوازنة: كامل الدقائق +90 (من 90:00 حتى 91:59)
-    const isWinner = (savedStopMinute === 90 || savedStopMinute === 91);
+    // نافذة الفوز الدقيقة: بين 90:00 و 90:50
+    const isWinner = (savedStopMinute === 90 && savedStopCentis <= 50);
 
     const titleEl = document.getElementById('resultTitle');
     const descEl = document.getElementById('resultDesc');
@@ -477,9 +473,9 @@
     if (isWinner) {
       playWinChime();
       iconEl.innerText = "🏆";
-      titleEl.innerText = "هدف قاتل في الـ +90!";
+      titleEl.innerText = "هدف في التسعين!";
       titleEl.style.color = "var(--primary-accent)";
-      descEl.innerHTML = `توقيت مدروس وبراعة في اللحظة الحاسمة!<br>استحققت بطاقة <strong>${clubTitles[currentClub]}</strong> الذكية!`;
+      descEl.innerHTML = `توقيت مذهل في اللحظة القاتلة عند <strong style="color:#FFF;">${timeFormatted}</strong>!<br>استحققت بطاقة <strong>${clubTitles[currentClub]}</strong> الذكية!`;
       cardUnlockEl.style.display = "block";
     } else {
       playMissSound();
@@ -487,8 +483,8 @@
       titleEl.innerText = "مرّت بجوار القائم!";
       titleEl.style.color = "#E63946";
       
-      let note = savedStopMinute < 90 ? "استعجلت التسديد قبل اكتمال الـ 90 دقيقة!" : "تأخرت وتجاوزت الوقت بدل الضائع المحدد!";
-      descEl.innerHTML = `${note}<br>حاول مجدداً لتخطف الفوز في الوقت القاتل.`;
+      let note = savedStopMinute < 90 ? "استعجلت التسديد قبل اكتمال الـ 90 دقيقة!" : "تأخرت وتجاوزت نطاق الـ 90:50 المحدد!";
+      descEl.innerHTML = `${note}<br>حاول مجدداً لتخطف الفوز بدقة في الـ 90.`;
       cardUnlockEl.style.display = "none";
     }
   }

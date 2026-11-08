@@ -203,7 +203,33 @@
 
     .res-icon { font-size: 3.8rem; margin-bottom: 8px; }
     .res-title { font-size: 1.4rem; font-weight: 900; color: #FFF; margin-bottom: 8px; }
-    .res-desc { font-size: 0.82rem; color: #BBB; line-height: 1.6; margin-bottom: 18px; }
+    
+    /* صندوق إبراز وقت التوقف */
+    .stop-time-badge-box {
+      background: rgba(0, 0, 0, 0.6);
+      border: 1px dashed var(--border-accent);
+      border-radius: 12px;
+      padding: 10px 14px;
+      margin: 12px auto 14px;
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+    }
+    .stop-time-label {
+      font-size: 0.7rem;
+      color: #8E929C;
+      font-weight: 700;
+    }
+    .stop-time-value {
+      font-size: 2rem;
+      font-weight: 900;
+      font-family: monospace;
+      color: var(--primary-accent);
+      letter-spacing: 2px;
+    }
+
+    .res-desc { font-size: 0.85rem; color: #BBB; line-height: 1.6; margin-bottom: 18px; }
     .nfc-unlock-anim {
       padding: 14px;
       border-radius: 12px;
@@ -255,6 +281,13 @@
   <div id="resultStep" style="display: none;">
     <div id="resultIcon" class="res-icon">🏆</div>
     <h3 id="resultTitle" class="res-title">هدف في التسعين!</h3>
+    
+    <!-- عرض توقيت التوقف بشكل بارز ومستقل -->
+    <div class="stop-time-badge-box">
+      <span class="stop-time-label">توقيت إيقافك الدقيق:</span>
+      <span class="stop-time-value" id="finalStoppedTimeDisplay">00:00</span>
+    </div>
+
     <p id="resultDesc" class="res-desc"></p>
     
     <div id="winnerNfcCardBox" style="display: none;">
@@ -273,6 +306,11 @@
   let currentClub = 'default';
   let audioCtx = null;
 
+  // حفظ التوقيت بدقة عددية
+  let currentExactMinute = 0;
+  let savedStopMinute = 0;
+  let savedStopCentis = 0;
+
   const clubTitles = {
     hilal: "الموج الأزرق 🔵⚪",
     nassr: "فارس نجد 🟡🔵",
@@ -282,14 +320,12 @@
     ksa: "صقور الوطن 🟢⚪"
   };
 
-  // نظام صوتي رقمي ناعم ونظيف
   function getAudioContext() {
     if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     if (audioCtx.state === 'suspended') audioCtx.resume();
     return audioCtx;
   }
 
-  // نبضة صوتية عميقة وهادئة (مثل دقات القلب التكتيكية)
   function playHeartbeat() {
     try {
       const ctx = getAudioContext();
@@ -306,7 +342,6 @@
     } catch(e) {}
   }
 
-  // نقرة توقف ناعمة ونظيفة
   function playCleanStop() {
     try {
       const ctx = getAudioContext();
@@ -323,11 +358,10 @@
     } catch(e) {}
   }
 
-  // نغمة فوز ذهبية مريحة وفخمة
   function playWinChime() {
     try {
       const ctx = getAudioContext();
-      const freqs = [523.25, 659.25, 783.99, 1046.50]; // نغمات C Major فخمة
+      const freqs = [523.25, 659.25, 783.99, 1046.50];
       freqs.forEach((f, idx) => {
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
@@ -343,7 +377,6 @@
     } catch(e) {}
   }
 
-  // نغمة خسارة بسيطة وغير مزعجة
   function playMissSound() {
     try {
       const ctx = getAudioContext();
@@ -380,6 +413,11 @@
     } else if (challengeState === 'RUNNING') {
       challengeState = 'STOPPED';
       clearInterval(timerInterval);
+      
+      // التقاط التوقيت مباشرة من المتغير الرياضي لضمان الدقة
+      savedStopMinute = Math.floor(currentExactMinute);
+      savedStopCentis = Math.floor((currentExactMinute % 1) * 100);
+
       playCleanStop();
       evaluateScore();
     }
@@ -395,40 +433,43 @@
 
     timerInterval = setInterval(() => {
       const elapsed = Date.now() - startTime;
-      const currentMinute = (elapsed / duration) * targetMinute;
+      currentExactMinute = (elapsed / duration) * targetMinute;
       
-      const mins = Math.floor(currentMinute);
-      const centis = Math.floor((currentMinute % 1) * 100);
+      const mins = Math.floor(currentExactMinute);
+      const centis = Math.floor((currentExactMinute % 1) * 100);
       clockEl.innerText = `${String(mins).padStart(2, '0')}:${String(centis).padStart(2, '0')}`;
 
-      // نبض هادئ يتردد كل 15 دقيقة مباراة
       if (mins % 15 === 0 && mins !== lastBeat) {
         playHeartbeat();
         lastBeat = mins;
       }
 
-      if (currentMinute >= 85) {
+      if (currentExactMinute >= 85) {
         timerBox.classList.add('blind-mode');
       }
 
-      if (currentMinute > 96) {
+      if (currentExactMinute > 96) {
         clearInterval(timerInterval);
         challengeState = 'STOPPED';
+        savedStopMinute = Math.floor(currentExactMinute);
+        savedStopCentis = Math.floor((currentExactMinute % 1) * 100);
         evaluateScore();
       }
     }, 16);
   }
 
   function evaluateScore() {
-    const clockText = document.getElementById('matchClock').innerText;
-    const parts = clockText.split(':');
-    const stoppedMin = parseInt(parts[0], 10);
-    const stoppedCentis = parseInt(parts[1], 10);
-
-    const isWinner = (stoppedMin === 90 && stoppedCentis <= 50);
-
+    const timeFormatted = `${String(savedStopMinute).padStart(2, '0')}:${String(savedStopCentis).padStart(2, '0')}`;
+    
+    // إزالة التعتيم وإظهار شاشة النتيجة
+    document.getElementById('timerBox').classList.remove('blind-mode');
     document.getElementById('timerStep').style.display = 'none';
     document.getElementById('resultStep').style.display = 'block';
+
+    // كتابة التوقيت في الخانة المخصصة
+    document.getElementById('finalStoppedTimeDisplay').innerText = timeFormatted;
+
+    const isWinner = (savedStopMinute === 90 && savedStopCentis <= 50);
 
     const titleEl = document.getElementById('resultTitle');
     const descEl = document.getElementById('resultDesc');
@@ -440,7 +481,7 @@
       iconEl.innerText = "🏆";
       titleEl.innerText = "هدف في التسعين!";
       titleEl.style.color = "var(--primary-accent)";
-      descEl.innerHTML = `أوقفت العداد بدقة عند <strong style="color:#FFF;">${clockText}</strong>.<br>استحققت بطاقة ناديك الذكية!`;
+      descEl.innerHTML = `توقيت أسطوري في اللحظة القاتلة!<br>أثبتّ براعتك واستحققت بطاقة <strong>${clubTitles[currentClub]}</strong> الذكية!`;
       cardUnlockEl.style.display = "block";
     } else {
       playMissSound();
@@ -448,8 +489,8 @@
       titleEl.innerText = "مرّت بجوار القائم!";
       titleEl.style.color = "#E63946";
       
-      let note = stoppedMin < 90 ? "استعجلت التسديد قبل الوقت!" : "تأخرت وضاعت الفرصة!";
-      descEl.innerHTML = `توقفك كان عند <strong style="color:#FFF;">${clockText}</strong>.<br>${note}`;
+      let note = savedStopMinute < 90 ? "استعجلت التسديد قبل اكتمال الـ 90 دقيقة!" : "تأخرت وتجاوزت الوقت بدل الضائع المحدد!";
+      descEl.innerHTML = `${note}<br>حاول مجدداً لتضبط توقيت الصافرة بدقة.`;
       cardUnlockEl.style.display = "none";
     }
   }
@@ -457,6 +498,10 @@
   function resetChallenge() {
     challengeState = 'IDLE';
     clearInterval(timerInterval);
+    currentExactMinute = 0;
+    savedStopMinute = 0;
+    savedStopCentis = 0;
+
     document.getElementById('timerBox').classList.remove('blind-mode');
     document.getElementById('matchClock').innerText = "00:00";
     document.getElementById('mainActionBtn').innerText = "انطلاق المباراة ⏱️";
